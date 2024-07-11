@@ -1,4 +1,5 @@
 ﻿using SistemaWeb.Shared.DTOs;
+using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Request;
 using SistemaWeb.Shared.Services;
 
@@ -6,29 +7,39 @@ namespace SistemaWeb.Api.Services
 {
     public class FornecedorService : IFornecedorService
     {
-        public Task<FornecedorDto> CreateAsync(FornecedorRequest request)
+        private readonly IFornecedorRepository _repository;
+        public FornecedorService(IFornecedorRepository repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;   
+        }
+        public async Task<FornecedorDto> CreateAsync(FornecedorRequest request)
+        {
+            var result = await _repository.CreateAsync(request);
+            return result;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.DeleteAsync(id);
+            return result;
         }
 
-        public Task<List<FornecedorDto>> GetAllAsync()
+        public async Task<List<FornecedorDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetAllAsync();
+            return result;
         }
 
-        public Task<FornecedorDto> GetByIdAsync(int id)
+        public async Task<FornecedorDto> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            return result;
         }
 
-        public Task UpdateAsync(FornecedorRequest request)
+        public async Task<bool> UpdateAsync(FornecedorRequest request, int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.UpdateAsync(request, id);
+            return result;
         }
     }
 }

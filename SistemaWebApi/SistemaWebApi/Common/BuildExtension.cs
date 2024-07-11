@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SistemaWeb.Api.Context;
+using SistemaWeb.Api.Repositories;
 using SistemaWeb.Api.Services;
+using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Services;
 
 namespace SistemaWeb.Api.Common
@@ -21,6 +23,7 @@ namespace SistemaWeb.Api.Common
         public static void AddServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IFornecedorService, FornecedorService>();
+            builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             builder.Services.AddScoped<IProdutoService, ProdutoService>();
         }
     }

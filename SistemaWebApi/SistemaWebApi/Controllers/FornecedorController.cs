@@ -5,7 +5,7 @@ using SistemaWeb.Shared.Services;
 namespace SistemaWeb.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     public class FornecedorController : ControllerBase
     {
         private readonly IFornecedorService _service;
@@ -18,8 +18,8 @@ namespace SistemaWeb.Api.Controllers
         {
             try
             {
-                await _service.CreateAsync(request);
-                return Ok(request);
+                var result = await _service.CreateAsync(request);
+                return StatusCode(201, result);
             }
             catch (Exception e)
             {
@@ -27,17 +27,17 @@ namespace SistemaWeb.Api.Controllers
                 throw;
             }
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(FornecedorRequest request)
+        [HttpPut("{id}")]
+        
+        public async Task<IActionResult> UpdateAsync(FornecedorRequest request, int id)
         {
             try
             {
-                await _service.UpdateAsync(request);
-                return Ok(request);
+                var result = await _service.UpdateAsync(request, id);
+                return Ok(result);
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
@@ -51,7 +51,6 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
@@ -61,6 +60,7 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.DeleteAsync(id);
+                if(result is false) return NotFound();
                 return Ok(result);
             }
             catch (Exception e)

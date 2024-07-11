@@ -13,6 +13,6 @@ namespace SistemaWeb.Shared.Request
         public string Telefone { get; set; } = string.Empty;
         [Required]
         public EnderecoRequest Endereco { get; set; } = null!;
-        public virtual List<ProdutoRequest> Produtos { get; set; } = null!;
+        public virtual List<Produto> Produtos { get; set; } = null!;
     }
 }

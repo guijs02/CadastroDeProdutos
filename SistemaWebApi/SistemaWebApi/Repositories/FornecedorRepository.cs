@@ -1,5 +1,7 @@
-﻿using SistemaWeb.Api.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaWeb.Api.Context;
 using SistemaWeb.Shared.DTOs;
+using SistemaWeb.Shared.Models;
 using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Request;
 
@@ -12,29 +14,68 @@ namespace SistemaWeb.Api.Repositories
         {
             _context = context;
         }
-        public Task<FornecedorDto> CreateAsync(FornecedorRequest request)
+        public async Task<FornecedorDto> CreateAsync(FornecedorRequest request)
         {
-            throw new NotImplementedException();
+            var fornecedor = new Fornecedor
+            {
+                Endereco = new()
+                {
+                    Bairro = request.Endereco.Bairro,
+                    Cep = request.Endereco.Cep,
+                    Logradouro = request.Endereco.Logradouro,
+                    Numero = request.Endereco.Numero,
+                },
+                Cnpj = request.Cnpj,
+                Nome = request.Nome,
+                Produtos = request.Produtos,
+                Telefone = request.Telefone
+            };
+
+            await _context.Fornecedor.AddAsync(fornecedor);
+            await _context.SaveChangesAsync();
+            return fornecedor;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
+            _context.Fornecedor.Remove(result);
+            _context.SaveChanges();
+            return true;
         }
 
-        public Task<List<FornecedorDto>> GetAllAsync()
+        public async Task<List<FornecedorDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await (from f in _context.Fornecedor
+                          select new FornecedorDto()
+                          {
+                              Cnpj = f.Cnpj,
+                              Endereco = f.Endereco,
+                              Nome = f.Nome,
+                              Produtos = f.Produtos,
+                              Telefone = f.Telefone
+                          }).ToListAsync();
         }
 
-        public Task<FornecedorDto> GetByIdAsync(int id)
+        public async Task<FornecedorDto> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        public Task UpdateAsync(FornecedorRequest request)
+        public async Task<bool> UpdateAsync(FornecedorRequest request, int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
+
+            result.Nome = request.Nome;
+            result.Produtos = request.Produtos;
+            result.Telefone = request.Telefone;
+            result.Cnpj = request.Cnpj;
+            result.Endereco = result.Endereco;
+
+            _context.Update(result);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }
