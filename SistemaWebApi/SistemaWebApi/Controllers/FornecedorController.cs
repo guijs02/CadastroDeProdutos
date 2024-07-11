@@ -23,12 +23,10 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-
-                throw;
+                return StatusCode(500, "Ocorreu um erro buscar ao criar");
             }
         }
         [HttpPut("{id}")]
-        
         public async Task<IActionResult> UpdateAsync(FornecedorRequest request, int id)
         {
             try
@@ -38,7 +36,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                throw;
+                return StatusCode(500, "Ocorreu um erro buscar ao alterar");
             }
         }
         [HttpGet]
@@ -47,11 +45,12 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var fornecedores = await _service.GetAllAsync();
+                if(!fornecedores.Any()) return NoContent();
                 return Ok(fornecedores);
             }
             catch (Exception e)
             {
-                throw;
+                return StatusCode(500, "Ocorreu um erro buscar ao buscar");
             }
         }
         [HttpDelete]
@@ -65,7 +64,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                throw;
+                return StatusCode(500, "Ocorreu um erro buscar ao deletar");
             }
         }
         [HttpGet("{id}")]
@@ -74,11 +73,12 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.GetByIdAsync(id);
+                if(result ==  null) return NotFound();  
                 return Ok(result);
             }
             catch (Exception e)
             {
-                throw;
+                return StatusCode(500, "Ocorreu um erro buscar o registro");
             }
         }
     }

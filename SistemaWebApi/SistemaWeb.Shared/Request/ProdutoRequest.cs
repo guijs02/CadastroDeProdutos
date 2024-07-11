@@ -10,6 +10,8 @@ namespace SistemaWeb.Shared.Request
         [Required]
         public string Marca { get; set; } = null!;
         [Required]
+        public int FornecedorId { get; set; }
+        [Required]
         public EUnidadeMedida Unidade { get; set; }
         [Required]
         public decimal ValorCompra { get; set; }

@@ -25,6 +25,7 @@ namespace SistemaWeb.Api.Common
             builder.Services.AddScoped<IFornecedorService, FornecedorService>();
             builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             builder.Services.AddScoped<IProdutoService, ProdutoService>();
+            builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
         }
     }
 }

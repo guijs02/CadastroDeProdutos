@@ -4,6 +4,7 @@ namespace SistemaWeb.Shared.DTOs
 {
     public class FornecedorDto
     {
+        public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Cnpj { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;

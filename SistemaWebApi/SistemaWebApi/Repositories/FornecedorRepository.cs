@@ -49,6 +49,7 @@ namespace SistemaWeb.Api.Repositories
             return await (from f in _context.Fornecedor
                           select new FornecedorDto()
                           {
+                              Id = f.Id,
                               Cnpj = f.Cnpj,
                               Endereco = f.Endereco,
                               Nome = f.Nome,
@@ -59,7 +60,9 @@ namespace SistemaWeb.Api.Repositories
 
         public async Task<FornecedorDto> GetByIdAsync(int id)
         {
-            return await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
+            return await _context.Fornecedor.Include(i => i.Endereco)
+                                            .Include(i => i.Produtos)
+                                            .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task<bool> UpdateAsync(FornecedorRequest request, int id)
@@ -76,6 +79,15 @@ namespace SistemaWeb.Api.Repositories
             _context.SaveChanges();
 
             return true;
+        }
+        public async Task<bool> ExistFornecedorDuplicado(FornecedorRequest request)
+        {
+            return await _context.Fornecedor
+                                .AnyAsync(w =>
+                                           w.Cnpj == request.Cnpj && w.Telefone == request.Telefone &&
+                                           w.Nome == request.Nome && w.Endereco.Equals(request.Endereco) && 
+                                           w.Produtos.Equals(request.Produtos)
+                                           );
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using SistemaWeb.Shared.DTOs;
 using SistemaWeb.Shared.Request;
 
-namespace SistemaWeb.Shared.Services
+namespace SistemaWeb.Shared.Repositories
 {
-    public interface IProdutoService
+    public interface IProdutoRepository
     {
         Task<ProdutoDto> CreateAsync(ProdutoRequest request);
         Task<bool> UpdateAsync(ProdutoRequest request, int id);
