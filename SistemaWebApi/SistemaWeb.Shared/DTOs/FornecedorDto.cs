@@ -1,4 +1,5 @@
 ﻿using SistemaWeb.Shared.Models;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace SistemaWeb.Shared.DTOs
@@ -11,7 +12,7 @@ namespace SistemaWeb.Shared.DTOs
         public string Telefone { get; set; } = string.Empty;
         public string Cep { get; set; } = string.Empty;
         public string Endereco { get; set; } = string.Empty;
-        public virtual List<Produto> Produtos { get; set; } = null!;
+        public List<Produto> Produtos { get; set; } = null!;
         [JsonIgnore]
         public bool IsValidCnpj { get; set; }
 

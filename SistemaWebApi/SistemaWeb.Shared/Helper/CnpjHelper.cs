@@ -66,7 +66,7 @@ namespace SistemaWeb.Shared.Rules
                 throw new ArgumentException("CNPJ deve conter 14 dígitos.");
             }
 
-            return Convert.ToUInt64(cnpj).ToString(@"00\.000\.000\/0000\-00");
+            return System.Convert.ToUInt64(cnpj).ToString(@"00\.000\.000\/0000\-00");
         }
     }
 }

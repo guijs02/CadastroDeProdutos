@@ -45,6 +45,10 @@ namespace SistemaWeb.Api.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+            catch (NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
             catch (Exception e)
             {
                 return StatusCode(500, ErrorMessages.ErroAlterar);
@@ -58,6 +62,10 @@ namespace SistemaWeb.Api.Controllers
                 var result = await _service.DeleteAsync(id, fornecedorId);
                 if (result is false) return NotFound();
                 return Ok(result);
+            }
+            catch(NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
             }
             catch (Exception e)
             {

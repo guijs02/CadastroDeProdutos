@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SistemaWeb.Api.Context;
+using SistemaWeb.Shared.Constants;
 using SistemaWeb.Shared.DTOs;
+using SistemaWeb.Shared.Exceptions;
 using SistemaWeb.Shared.Models;
 using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Request;
@@ -31,11 +33,12 @@ namespace SistemaWeb.Api.Repositories
 
         public async Task<bool> DeleteAsync(int id, int fornecedorId)
         {
-            var result = await _context.Produto.FirstOrDefaultAsync(w => w.Id == id && w.FornecedorId == fornecedorId);
+            var produto = await _context.Produto.FirstOrDefaultAsync(w => w.Id == id && w.FornecedorId == fornecedorId);
 
-            if (result == null) return false;
+            if (produto is null)
+                throw new NotFoundException(ErrorMessages.ErroProdutoNaoEncontrado);
 
-            _context.Produto.Remove(result);
+            _context.Produto.Remove(produto);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -44,7 +47,8 @@ namespace SistemaWeb.Api.Repositories
         {
             var produto = await _context.Produto.FirstOrDefaultAsync(w => w.Id == id && w.FornecedorId == request.FornecedorId);
 
-            if (produto == null) return false;
+             if (produto is null)
+                throw new NotFoundException(ErrorMessages.ErroProdutoNaoEncontrado);
 
             produto.Descricao = request.Descricao;
             produto.ValorCompra = request.ValorCompra;

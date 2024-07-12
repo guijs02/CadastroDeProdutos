@@ -19,6 +19,7 @@ namespace SistemaWeb.Shared.Request
         public string Cep { get; set; } = string.Empty;
         [JsonIgnore]
         public string Endereco { get; set; } = string.Empty;
-        public virtual List<Produto> Produtos { get; set; } = null!;
+        //public List<Produto> Produtos { get; set; } = null!;
+        public List<ProdutoRequest> Produtos { get; set; } = null!;
     }
 }

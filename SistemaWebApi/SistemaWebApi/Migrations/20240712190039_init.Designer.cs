@@ -11,7 +11,7 @@ using SistemaWeb.Api.Context;
 namespace SistemaWeb.Api.Migrations
 {
     [DbContext(typeof(AppWebDbContext))]
-    [Migration("20240711225744_init")]
+    [Migration("20240712190039_init")]
     partial class init
     {
         /// <inheritdoc />

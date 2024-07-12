@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SistemaWeb.Api.Context;
+using SistemaWeb.Shared.Constants;
 using SistemaWeb.Shared.DTOs;
+using SistemaWeb.Shared.Exceptions;
+using SistemaWeb.Shared.Extension;
 using SistemaWeb.Shared.Models;
 using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Request;
@@ -22,7 +25,7 @@ namespace SistemaWeb.Api.Repositories
                 Endereco = request.Endereco,
                 Cep = request.Cep,
                 Nome = request.Nome,
-                Produtos = request.Produtos,
+                Produtos = request.Produtos.ConvertToProduto(),
                 Telefone = request.Telefone
             };
 
@@ -34,6 +37,10 @@ namespace SistemaWeb.Api.Repositories
         public async Task<bool> DeleteAsync(int id)
         {
             var result = await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
+
+            if (result == null)
+                throw new NotFoundException(ErrorMessages.ErroFornecedorNaoEncontrado);
+
             _context.Fornecedor.Remove(result);
             _context.SaveChanges();
             return true;
@@ -65,15 +72,21 @@ namespace SistemaWeb.Api.Repositories
         public async Task<FornecedorDto> GetByIdAsync(int id)
         {
             return await _context.Fornecedor.Include(i => i.Produtos)
-                                            .FirstOrDefaultAsync(w => w.Id == id);
+                                            .FirstOrDefaultAsync(w => w.Id == id) ??
+                                                throw new NotFoundException(ErrorMessages.ErroFornecedorNaoEncontrado);
         }
 
         public async Task<FornecedorDto> UpdateAsync(FornecedorRequest request, int id)
         {
             var result = await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
 
+            if (result == null)
+                throw new NotFoundException(ErrorMessages.ErroFornecedorNaoEncontrado);
+
+            var produtos = request.Produtos.ConvertToProduto();
+
             result.Nome = request.Nome;
-            result.Produtos = request.Produtos;
+            result.Produtos = produtos;
             result.Telefone = request.Telefone;
             result.Cnpj = request.Cnpj;
             result.Endereco = request.Endereco;
@@ -90,7 +103,7 @@ namespace SistemaWeb.Api.Repositories
                 Endereco = request.Endereco,
                 IsValidCnpj = request.IsValidCnpj,
                 Nome = request.Nome,
-                Produtos = request.Produtos,
+                Produtos = produtos,
                 Telefone = request.Telefone,
             };
         }

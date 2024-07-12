@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SistemaWeb.Shared.Constants;
 using SistemaWeb.Shared.Exceptions;
 using SistemaWeb.Shared.Request;
@@ -21,17 +22,18 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.CreateAsync(request);
-                
+
                 if (!result.IsValidCnpj) return BadRequest(ErrorMessages.ErroCnpjInvalido);
+
                 return StatusCode(201, result);
             }
-            catch(DuplicateDataException e)
+            catch (DuplicateDataException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { message = e.Message });
             }
             catch (Exception e)
             {
-                return StatusCode(500, ErrorMessages.ErroCriar);
+                return StatusCode(500, new { message = ErrorMessages.ErroCriar });
             }
         }
         [HttpPut("{id}")]
@@ -45,11 +47,15 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (DuplicateDataException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { message = e.Message });
+            }
+            catch(NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
             }
             catch (Exception e)
             {
-                return StatusCode(500, ErrorMessages.ErroAlterar);
+                return StatusCode(500, new { message = ErrorMessages.ErroAlterar });
             }
         }
         [HttpGet]
@@ -57,16 +63,15 @@ namespace SistemaWeb.Api.Controllers
         {
             try
             {
-                if (pageNumber < 1 || pageSize < 1) return BadRequest("Os parâmetros deve ser maior que 0");
+                if (pageNumber < 1 || pageSize < 1) return BadRequest(ErrorMessages.ErroParametrosMenorQueUm);
 
                 var fornecedores = await _service.GetAllByPagedAsync(pageNumber, pageSize);
-
-                if(!fornecedores.Any()) return NoContent();
+                if (fornecedores.Count == 0) return NoContent();
                 return Ok(fornecedores);
             }
             catch (Exception e)
             {
-                return StatusCode(500, ErrorMessages.ErroBuscar);
+                return StatusCode(500, new { message = ErrorMessages.ErroBuscar });
             }
         }
         [HttpDelete]
@@ -75,12 +80,15 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.DeleteAsync(id);
-                if(result is false) return NotFound();
                 return Ok(result);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
             }
             catch (Exception e)
             {
-                return StatusCode(500, ErrorMessages.ErroDeletar);
+                return StatusCode(500, new { message = ErrorMessages.ErroDeletar });
             }
         }
         [HttpGet("{id}")]
@@ -89,12 +97,16 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.GetByIdAsync(id);
-                if(result ==  null) return NotFound();  
+
                 return Ok(result);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
             }
             catch (Exception e)
             {
-                return StatusCode(500, ErrorMessages.ErroBuscar);
+                return StatusCode(500, new { message = ErrorMessages.ErroBuscar });
             }
         }
     }

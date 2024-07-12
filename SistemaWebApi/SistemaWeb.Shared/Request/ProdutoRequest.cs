@@ -1,10 +1,13 @@
 ﻿using SistemaWeb.Shared.Models.Enum;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SistemaWeb.Shared.Request
 {
     public record class ProdutoRequest
     {
+        [JsonIgnore]
+        public int Id { get; set; }
         [Required]
         public string Descricao { get; set; } = null!;
         [Required]
