@@ -1,5 +1,5 @@
 ﻿using SistemaWeb.Shared.DTOs;
-using SistemaWeb.Shared.Enum;
+using SistemaWeb.Shared.Models.Enum;
 using System.Text.Json.Serialization;
 
 namespace SistemaWeb.Shared.Models

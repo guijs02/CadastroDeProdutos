@@ -1,4 +1,4 @@
-﻿namespace SistemaWeb.Shared.Enum
+﻿namespace SistemaWeb.Shared.Models.Enum
 {
     public enum EUnidadeMedida
     {

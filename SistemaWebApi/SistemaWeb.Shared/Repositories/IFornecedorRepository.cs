@@ -6,8 +6,8 @@ namespace SistemaWeb.Shared.Repositories
     public interface IFornecedorRepository
     {
         Task<FornecedorDto> CreateAsync(FornecedorRequest request);
-        Task<bool> UpdateAsync(FornecedorRequest request, int id);
-        Task<List<FornecedorDto>> GetAllAsync();
+        Task<FornecedorDto> UpdateAsync(FornecedorRequest request, int id);
+        Task<List<FornecedorDto>> GetAllByPagedAsync(int pageNumber, int pageSize);
         Task<FornecedorDto> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int id);
         Task<bool> ExistFornecedorDuplicado(FornecedorRequest request);

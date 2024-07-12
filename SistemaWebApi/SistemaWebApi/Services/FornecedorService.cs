@@ -1,8 +1,7 @@
-﻿using Azure.Core;
-using SistemaWeb.Shared;
-using SistemaWeb.Shared.Constants;
+﻿using SistemaWeb.Shared.Constants;
 using SistemaWeb.Shared.DTOs;
 using SistemaWeb.Shared.Exceptions;
+using SistemaWeb.Shared.Records;
 using SistemaWeb.Shared.Repositories;
 using SistemaWeb.Shared.Request;
 using SistemaWeb.Shared.Rules;
@@ -27,7 +26,10 @@ namespace SistemaWeb.Api.Services
             if (await _repository.ExistFornecedorDuplicado(request))
                 throw new DuplicateDataException();
 
-            ValidarFormatarCnpj(request);
+            if (!ValidarFormatarCnpj(request))
+            {
+                return new FornecedorDto { IsValidCnpj = false };
+            }
 
             var result = await _repository.CreateAsync(request);
 
@@ -38,14 +40,12 @@ namespace SistemaWeb.Api.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var result = await _repository.DeleteAsync(id);
-            return result;
+            return await _repository.DeleteAsync(id);
         }
 
-        public async Task<List<FornecedorDto>> GetAllAsync()
+        public async Task<List<FornecedorDto>> GetAllByPagedAsync(int pageNumber, int pageSize)
         {
-            var result = await _repository.GetAllAsync();
-            return result;
+            return await _repository.GetAllByPagedAsync(pageNumber, pageSize);
         }
 
         public async Task<FornecedorDto> GetByIdAsync(int id)
@@ -55,39 +55,55 @@ namespace SistemaWeb.Api.Services
             return result;
         }
 
-        public async Task<bool> UpdateAsync(FornecedorRequest request, int id)
+        public async Task<FornecedorDto> UpdateAsync(FornecedorRequest request, int id)
         {
             if (await _repository.ExistFornecedorDuplicado(request))
                 throw new DuplicateDataException();
 
             var responseCep = await GetEnderecoAsync(request);
+            request.Endereco = $"{responseCep.logradouro}, {responseCep.localidade}, {responseCep.uf}, {responseCep.bairro}";
 
-            ValidarFormatarCnpj(request);
+            if (!ValidarFormatarCnpj(request))
+            {
+                return new FornecedorDto { IsValidCnpj = false };
+            }
 
             var result = await _repository.UpdateAsync(request, id);
+
+            result.IsValidCnpj = request.IsValidCnpj;
+
             return result;
         }
 
         public async Task<ResponseViaCep> GetEnderecoAsync(FornecedorRequest request)
         {
-            using var httpClient = new HttpClient();
-            var response = await httpClient.GetStringAsync(string.Format(ApiCep.Url, request.Cep));
-            var endereco = JsonSerializer.Deserialize<ResponseViaCep>(response);
-            return endereco;
+            try
+            {
+                using var httpClient = new HttpClient();
+                var response = await httpClient.GetStringAsync(string.Format(ApiCep.Url, request.Cep));
+                var endereco = JsonSerializer.Deserialize<ResponseViaCep>(response);
+                return endereco;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
-        private void ValidarFormatarCnpj(FornecedorRequest request)
+        private bool ValidarFormatarCnpj(FornecedorRequest request)
         {
             var isValid = CnpjHelper.IsCnpj(request.Cnpj);
 
             if (!isValid)
             {
                 request.IsValidCnpj = isValid;
-                return;
+                return isValid;
             };
 
             request.IsValidCnpj = isValid;
 
             request.Cnpj = CnpjHelper.FormatarCnpj(request.Cnpj);
+
+            return isValid;
         }
     }
 }

@@ -7,7 +7,7 @@ using SistemaWeb.Shared.Services;
 namespace SistemaWeb.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class FornecedorController : ControllerBase
     {
         private readonly IFornecedorService _service;
@@ -22,7 +22,7 @@ namespace SistemaWeb.Api.Controllers
             {
                 var result = await _service.CreateAsync(request);
                 
-                if (!request.IsValidCnpj) return BadRequest(ErrorMessages.ErroCnpjInvalido);
+                if (!result.IsValidCnpj) return BadRequest(ErrorMessages.ErroCnpjInvalido);
                 return StatusCode(201, result);
             }
             catch(DuplicateDataException e)
@@ -53,11 +53,14 @@ namespace SistemaWeb.Api.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllByPagedAsync([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             try
             {
-                var fornecedores = await _service.GetAllAsync();
+                if (pageNumber < 1 || pageSize < 1) return BadRequest("Os parâmetros deve ser maior que 0");
+
+                var fornecedores = await _service.GetAllByPagedAsync(pageNumber, pageSize);
+
                 if(!fornecedores.Any()) return NoContent();
                 return Ok(fornecedores);
             }

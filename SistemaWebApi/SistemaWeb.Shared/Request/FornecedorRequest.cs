@@ -12,11 +12,10 @@ namespace SistemaWeb.Shared.Request
         public string Cnpj { get; set; } = string.Empty;
         [JsonIgnore]
         public bool IsValidCnpj { get; set; }
-        [JsonIgnore]
-        public bool SuccessApiCep { get; set; }
         [Required]
         public string Telefone { get; set; } = string.Empty;
         [Required]
+        [MinLength(8)]
         public string Cep { get; set; } = string.Empty;
         [JsonIgnore]
         public string Endereco { get; set; } = string.Empty;

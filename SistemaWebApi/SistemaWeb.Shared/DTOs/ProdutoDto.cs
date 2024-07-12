@@ -1,5 +1,5 @@
-﻿using SistemaWeb.Shared.Enum;
-using SistemaWeb.Shared.Models;
+﻿using SistemaWeb.Shared.Models;
+using SistemaWeb.Shared.Models.Enum;
 
 namespace SistemaWeb.Shared.DTOs
 {

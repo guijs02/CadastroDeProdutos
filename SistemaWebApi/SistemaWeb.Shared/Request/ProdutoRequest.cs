@@ -1,4 +1,4 @@
-﻿using SistemaWeb.Shared.Enum;
+﻿using SistemaWeb.Shared.Models.Enum;
 using System.ComponentModel.DataAnnotations;
 
 namespace SistemaWeb.Shared.Request
@@ -14,6 +14,7 @@ namespace SistemaWeb.Shared.Request
         [Required]
         public EUnidadeMedida Unidade { get; set; }
         [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser maior que zero.")]
         public decimal ValorCompra { get; set; }
     }
 }

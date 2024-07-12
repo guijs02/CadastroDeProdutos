@@ -39,19 +39,27 @@ namespace SistemaWeb.Api.Repositories
             return true;
         }
 
-        public async Task<List<FornecedorDto>> GetAllAsync()
+        public async Task<List<FornecedorDto>> GetAllByPagedAsync(int pageNumber, int pageSize)
         {
-            return await (from f in _context.Fornecedor
-                          select new FornecedorDto()
-                          {
-                              Id = f.Id,
-                              Cnpj = f.Cnpj,
-                              Endereco = f.Endereco,
-                              Nome = f.Nome,
-                              Produtos = f.Produtos,
-                              Telefone = f.Telefone,
-                              Cep = f.Cep,
-                          }).ToListAsync();
+            var totalRecords = _context.Fornecedor.Count();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            var fornecedores = await _context.Fornecedor
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(f => new FornecedorDto
+                {
+                    Id = f.Id,
+                    Cnpj = f.Cnpj,
+                    Endereco = f.Endereco,
+                    Nome = f.Nome,
+                    Produtos = f.Produtos,
+                    Telefone = f.Telefone,
+                    Cep = f.Cep,
+                })
+                .ToListAsync();
+
+            return fornecedores;
         }
 
         public async Task<FornecedorDto> GetByIdAsync(int id)
@@ -60,7 +68,7 @@ namespace SistemaWeb.Api.Repositories
                                             .FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        public async Task<bool> UpdateAsync(FornecedorRequest request, int id)
+        public async Task<FornecedorDto> UpdateAsync(FornecedorRequest request, int id)
         {
             var result = await _context.Fornecedor.FirstOrDefaultAsync(w => w.Id == id);
 
@@ -68,21 +76,31 @@ namespace SistemaWeb.Api.Repositories
             result.Produtos = request.Produtos;
             result.Telefone = request.Telefone;
             result.Cnpj = request.Cnpj;
-            result.Endereco = result.Endereco;
-            result.Cep = result.Cep;
+            result.Endereco = request.Endereco;
+            result.Cep = request.Cep;
 
             _context.Update(result);
             _context.SaveChanges();
 
-            return true;
+            return new FornecedorDto
+            {
+                Id = id,
+                Cep = request.Cep,
+                Cnpj = request.Cnpj,
+                Endereco = request.Endereco,
+                IsValidCnpj = request.IsValidCnpj,
+                Nome = request.Nome,
+                Produtos = request.Produtos,
+                Telefone = request.Telefone,
+            };
         }
         public async Task<bool> ExistFornecedorDuplicado(FornecedorRequest request)
         {
             var duplicado = await _context.Fornecedor.AnyAsync(a => a.Endereco == request.Endereco &&
-                                                                request.Cep == request.Cep &&
-                                                                request.Cnpj == request.Cnpj &&
-                                                                request.Nome == request.Nome &&
-                                                                request.Telefone == request.Telefone
+                                                                a.Cep == request.Cep &&
+                                                                a.Cnpj == request.Cnpj &&
+                                                                a.Nome == request.Nome &&
+                                                                a.Telefone == request.Telefone
                                                                 );
             return duplicado;
         }

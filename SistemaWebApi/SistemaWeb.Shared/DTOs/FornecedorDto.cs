@@ -18,10 +18,12 @@ namespace SistemaWeb.Shared.DTOs
         public static implicit operator FornecedorDto(Fornecedor fornecedor)
                 => new()
                 {
+                    Id = fornecedor.Id,
                     Cnpj = fornecedor.Cnpj,
                     Endereco = fornecedor.Endereco,
                     Nome = fornecedor.Nome,
                     Produtos = fornecedor.Produtos,
+                    Cep = fornecedor.Cep,
                     Telefone = fornecedor.Telefone
                 };
     }

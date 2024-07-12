@@ -13,9 +13,9 @@ namespace SistemaWeb.Api.Common
         {
             builder.Services
                     .AddDbContext<AppWebDbContext>(
-                            options => options.UseSqlServer(builder.Configuration["Connection"]));
+                            options => options.UseSqlServer(builder.Configuration[Configuration.ConnectionString]));
         }
-        public static void AddSwagger(this WebApplicationBuilder builder)
+        public static void AddSwaggerDocumentation(this WebApplicationBuilder builder)
         {
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -23,6 +23,7 @@ namespace SistemaWeb.Api.Common
         public static void AddServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddHttpClient();
+            builder.Services.AddControllers();
             builder.Services.AddScoped<IFornecedorService, FornecedorService>();
             builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             builder.Services.AddScoped<IProdutoService, ProdutoService>();
