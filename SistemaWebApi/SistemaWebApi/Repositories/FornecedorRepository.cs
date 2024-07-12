@@ -10,13 +10,10 @@ using SistemaWeb.Shared.Request;
 
 namespace SistemaWeb.Api.Repositories
 {
-    public class FornecedorRepository : IFornecedorRepository
+    public class FornecedorRepository(AppWebDbContext context) : IFornecedorRepository
     {
-        private AppWebDbContext _context;
-        public FornecedorRepository(AppWebDbContext context)
-        {
-            _context = context;
-        }
+        private AppWebDbContext _context = context;
+
         public async Task<FornecedorDto> CreateAsync(FornecedorRequest request)
         {
             var fornecedor = new Fornecedor

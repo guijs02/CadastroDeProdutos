@@ -6,14 +6,9 @@ using SistemaWeb.Shared.Services;
 
 namespace SistemaWeb.Api.Services
 {
-    public class ProdutoService : IProdutoService
+    public class ProdutoService(IProdutoRepository repository) : IProdutoService
     {
-        private readonly IProdutoRepository _repository;
-
-        public ProdutoService(IProdutoRepository repository)
-        {
-            _repository = repository;
-        }
+        private readonly IProdutoRepository _repository = repository;
         public async Task<ProdutoDto> CreateAsync(ProdutoRequest request)
         {
             if (await _repository.ExistProdutoDuplicado(request))

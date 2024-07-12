@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SistemaWeb.Shared.Constants;
 using SistemaWeb.Shared.Exceptions;
 using SistemaWeb.Shared.Request;
@@ -9,13 +8,10 @@ namespace SistemaWeb.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class FornecedorController : ControllerBase
+    public class FornecedorController(IFornecedorService fornecedorService) : ControllerBase
     {
-        private readonly IFornecedorService _service;
-        public FornecedorController(IFornecedorService fornecedorService)
-        {
-            _service = fornecedorService;
-        }
+        private readonly IFornecedorService _service = fornecedorService;
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync(FornecedorRequest request)
         {
@@ -49,7 +45,7 @@ namespace SistemaWeb.Api.Controllers
             {
                 return StatusCode(500, new { message = e.Message });
             }
-            catch(NotFoundException e)
+            catch (NotFoundException e)
             {
                 return NotFound(new { message = e.Message });
             }

@@ -8,13 +8,10 @@ namespace SistemaWeb.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class ProdutoController : ControllerBase
+    public class ProdutoController(IProdutoService produtoService) : ControllerBase
     {
-        private readonly IProdutoService _service;
-        public ProdutoController(IProdutoService produtoService)
-        {
-            _service = produtoService;
-        }
+        private readonly IProdutoService _service = produtoService;
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync(ProdutoRequest request)
         {
@@ -25,7 +22,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (DuplicateDataException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { message = e.Message });
             }
             catch (Exception e)
             {
@@ -43,7 +40,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (DuplicateDataException e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new { message = e.Message });
             }
             catch (NotFoundException e)
             {

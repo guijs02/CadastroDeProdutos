@@ -10,13 +10,9 @@ using System.Text.Json;
 
 namespace SistemaWeb.Api.Services
 {
-    public class FornecedorService : IFornecedorService
+    public class FornecedorService(IFornecedorRepository repository) : IFornecedorService
     {
-        private readonly IFornecedorRepository _repository;
-        public FornecedorService(IFornecedorRepository repository)
-        {
-            _repository = repository;
-        }
+        private readonly IFornecedorRepository _repository = repository;
         public async Task<FornecedorDto> CreateAsync(FornecedorRequest request)
         {
             var responseCep = await GetEnderecoAsync(request);

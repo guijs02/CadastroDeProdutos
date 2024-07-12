@@ -9,13 +9,9 @@ using SistemaWeb.Shared.Request;
 
 namespace SistemaWeb.Api.Repositories
 {
-    public class ProdutoRepository : IProdutoRepository
+    public class ProdutoRepository(AppWebDbContext context) : IProdutoRepository
     {
-        private AppWebDbContext _context;
-        public ProdutoRepository(AppWebDbContext context)
-        {
-            _context = context;
-        }
+        private AppWebDbContext _context = context;
         public async Task<ProdutoDto> CreateAsync(ProdutoRequest request)
         {
             var produto = new Produto
