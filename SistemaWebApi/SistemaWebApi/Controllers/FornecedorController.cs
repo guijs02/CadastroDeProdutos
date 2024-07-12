@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SistemaWeb.Shared.Constants;
+using SistemaWeb.Shared.Exceptions;
 using SistemaWeb.Shared.Request;
 using SistemaWeb.Shared.Services;
 
@@ -19,11 +21,17 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.CreateAsync(request);
+                
+                if (!request.IsValidCnpj) return BadRequest(ErrorMessages.ErroCnpjInvalido);
                 return StatusCode(201, result);
+            }
+            catch(DuplicateDataException e)
+            {
+                return StatusCode(500, e.Message);
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao criar");
+                return StatusCode(500, ErrorMessages.ErroCriar);
             }
         }
         [HttpPut("{id}")]
@@ -32,11 +40,16 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.UpdateAsync(request, id);
+                if (!request.IsValidCnpj) return BadRequest(ErrorMessages.ErroCnpjInvalido);
                 return Ok(result);
+            }
+            catch (DuplicateDataException e)
+            {
+                return StatusCode(500, e.Message);
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao alterar");
+                return StatusCode(500, ErrorMessages.ErroAlterar);
             }
         }
         [HttpGet]
@@ -50,7 +63,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao buscar");
+                return StatusCode(500, ErrorMessages.ErroBuscar);
             }
         }
         [HttpDelete]
@@ -64,7 +77,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao deletar");
+                return StatusCode(500, ErrorMessages.ErroDeletar);
             }
         }
         [HttpGet("{id}")]
@@ -78,7 +91,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar o registro");
+                return StatusCode(500, ErrorMessages.ErroBuscar);
             }
         }
     }

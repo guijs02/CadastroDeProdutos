@@ -11,7 +11,7 @@ using SistemaWeb.Api.Context;
 namespace SistemaWeb.Api.Migrations
 {
     [DbContext(typeof(AppWebDbContext))]
-    [Migration("20240710235235_init")]
+    [Migration("20240711225744_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -24,35 +24,6 @@ namespace SistemaWeb.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SistemaWeb.Shared.Models.Endereco", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Bairro")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Logradouro")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Numero")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Endereco");
-                });
-
             modelBuilder.Entity("SistemaWeb.Shared.Models.Fornecedor", b =>
                 {
                     b.Property<int>("Id")
@@ -61,12 +32,17 @@ namespace SistemaWeb.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Cnpj")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -77,8 +53,6 @@ namespace SistemaWeb.Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnderecoId");
 
                     b.ToTable("Fornecedor");
                 });
@@ -115,26 +89,13 @@ namespace SistemaWeb.Api.Migrations
                     b.ToTable("Produto");
                 });
 
-            modelBuilder.Entity("SistemaWeb.Shared.Models.Fornecedor", b =>
-                {
-                    b.HasOne("SistemaWeb.Shared.Models.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Endereco");
-                });
-
             modelBuilder.Entity("SistemaWeb.Shared.Models.Produto", b =>
                 {
-                    b.HasOne("SistemaWeb.Shared.Models.Fornecedor", "Fornecedor")
+                    b.HasOne("SistemaWeb.Shared.Models.Fornecedor", null)
                         .WithMany("Produtos")
                         .HasForeignKey("FornecedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Fornecedor");
                 });
 
             modelBuilder.Entity("SistemaWeb.Shared.Models.Fornecedor", b =>

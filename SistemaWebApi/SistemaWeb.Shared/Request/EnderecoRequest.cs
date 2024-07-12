@@ -7,12 +7,12 @@ namespace SistemaWeb.Shared.Request
     {
         [JsonRequired]
         [Required]
+        [MinLength(8)]
         public string Cep { get; set; } = string.Empty;
         [JsonIgnore]
         public string Bairro { get; set; } = string.Empty;
         [JsonIgnore]
         public string Logradouro { get; set; } = string.Empty;
-        [JsonIgnore]
-        public string Numero { get; set; } = string.Empty;
+  
     }
 }

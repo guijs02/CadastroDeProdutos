@@ -18,14 +18,9 @@ namespace SistemaWeb.Api.Repositories
         {
             var fornecedor = new Fornecedor
             {
-                Endereco = new()
-                {
-                    Bairro = request.Endereco.Bairro,
-                    Cep = request.Endereco.Cep,
-                    Logradouro = request.Endereco.Logradouro,
-                    Numero = request.Endereco.Numero,
-                },
                 Cnpj = request.Cnpj,
+                Endereco = request.Endereco,
+                Cep = request.Cep,
                 Nome = request.Nome,
                 Produtos = request.Produtos,
                 Telefone = request.Telefone
@@ -54,14 +49,14 @@ namespace SistemaWeb.Api.Repositories
                               Endereco = f.Endereco,
                               Nome = f.Nome,
                               Produtos = f.Produtos,
-                              Telefone = f.Telefone
+                              Telefone = f.Telefone,
+                              Cep = f.Cep,
                           }).ToListAsync();
         }
 
         public async Task<FornecedorDto> GetByIdAsync(int id)
         {
-            return await _context.Fornecedor.Include(i => i.Endereco)
-                                            .Include(i => i.Produtos)
+            return await _context.Fornecedor.Include(i => i.Produtos)
                                             .FirstOrDefaultAsync(w => w.Id == id);
         }
 
@@ -74,6 +69,7 @@ namespace SistemaWeb.Api.Repositories
             result.Telefone = request.Telefone;
             result.Cnpj = request.Cnpj;
             result.Endereco = result.Endereco;
+            result.Cep = result.Cep;
 
             _context.Update(result);
             _context.SaveChanges();
@@ -82,12 +78,13 @@ namespace SistemaWeb.Api.Repositories
         }
         public async Task<bool> ExistFornecedorDuplicado(FornecedorRequest request)
         {
-            return await _context.Fornecedor
-                                .AnyAsync(w =>
-                                           w.Cnpj == request.Cnpj && w.Telefone == request.Telefone &&
-                                           w.Nome == request.Nome && w.Endereco.Equals(request.Endereco) && 
-                                           w.Produtos.Equals(request.Produtos)
-                                           );
+            var duplicado = await _context.Fornecedor.AnyAsync(a => a.Endereco == request.Endereco &&
+                                                                request.Cep == request.Cep &&
+                                                                request.Cnpj == request.Cnpj &&
+                                                                request.Nome == request.Nome &&
+                                                                request.Telefone == request.Telefone
+                                                                );
+            return duplicado;
         }
     }
 }

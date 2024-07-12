@@ -1,5 +1,6 @@
 ﻿using SistemaWeb.Shared.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SistemaWeb.Shared.Request
 {
@@ -9,10 +10,16 @@ namespace SistemaWeb.Shared.Request
         public string Nome { get; set; } = string.Empty;
         [Required]
         public string Cnpj { get; set; } = string.Empty;
+        [JsonIgnore]
+        public bool IsValidCnpj { get; set; }
+        [JsonIgnore]
+        public bool SuccessApiCep { get; set; }
         [Required]
         public string Telefone { get; set; } = string.Empty;
         [Required]
-        public EnderecoRequest Endereco { get; set; } = null!;
+        public string Cep { get; set; } = string.Empty;
+        [JsonIgnore]
+        public string Endereco { get; set; } = string.Empty;
         public virtual List<Produto> Produtos { get; set; } = null!;
     }
 }

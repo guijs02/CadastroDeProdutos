@@ -8,5 +8,6 @@ namespace SistemaWeb.Shared.Repositories
         Task<ProdutoDto> CreateAsync(ProdutoRequest request);
         Task<bool> UpdateAsync(ProdutoRequest request, int id);
         Task<bool> DeleteAsync(int id, int fornecedorId);
+        Task<bool> ExistProdutoDuplicado(ProdutoRequest request);
     }
 }

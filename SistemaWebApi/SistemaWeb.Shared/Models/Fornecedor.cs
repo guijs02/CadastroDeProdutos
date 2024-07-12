@@ -6,7 +6,8 @@
         public string Nome { get; set; } = string.Empty;
         public string Cnpj { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
-        public virtual Endereco Endereco { get; set; } = null!;
+        public string Cep { get; set; } = string.Empty;
+        public string Endereco { get; set; } = string.Empty;
         public virtual List<Produto> Produtos { get; set; } = null!;
 
     }

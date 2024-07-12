@@ -22,6 +22,7 @@ namespace SistemaWeb.Api.Common
         }
         public static void AddServices(this WebApplicationBuilder builder)
         {
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IFornecedorService, FornecedorService>();
             builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             builder.Services.AddScoped<IProdutoService, ProdutoService>();

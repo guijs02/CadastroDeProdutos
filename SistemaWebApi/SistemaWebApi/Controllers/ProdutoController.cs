@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SistemaWeb.Api.Services;
+using SistemaWeb.Shared.Constants;
+using SistemaWeb.Shared.Exceptions;
 using SistemaWeb.Shared.Request;
 using SistemaWeb.Shared.Services;
 
@@ -22,9 +23,13 @@ namespace SistemaWeb.Api.Controllers
                 var result = await _service.CreateAsync(request);
                 return StatusCode(201, result);
             }
+            catch (DuplicateDataException e)
+            {
+                return StatusCode(500, e.Message);
+            }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao criar");
+                return StatusCode(500, ErrorMessages.ErroCriar);
             }
         }
         [HttpPut("{id}")]
@@ -33,12 +38,16 @@ namespace SistemaWeb.Api.Controllers
             try
             {
                 var result = await _service.UpdateAsync(request, id);
-                if(result is false) return NotFound();
+                if (result is false) return NotFound();
                 return Ok(result);
+            }
+            catch (DuplicateDataException e)
+            {
+                return StatusCode(500, e.Message);
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao alterar");
+                return StatusCode(500, ErrorMessages.ErroAlterar);
             }
         }
         [HttpDelete("{id}/{fornecedorId}")]
@@ -52,7 +61,7 @@ namespace SistemaWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Ocorreu um erro buscar ao deletar");
+                return StatusCode(500, ErrorMessages.ErroDeletar);
             }
         }
     }

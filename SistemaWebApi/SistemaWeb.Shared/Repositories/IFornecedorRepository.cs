@@ -10,5 +10,6 @@ namespace SistemaWeb.Shared.Repositories
         Task<List<FornecedorDto>> GetAllAsync();
         Task<FornecedorDto> GetByIdAsync(int id);
         Task<bool> DeleteAsync(int id);
+        Task<bool> ExistFornecedorDuplicado(FornecedorRequest request);
     }
 }
